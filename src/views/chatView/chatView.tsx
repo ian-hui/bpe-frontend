@@ -27,15 +27,14 @@ export default function ChatView(props: ChatViewProps) {
     };
 
     const handleSendMessage = () => {
+        // 发送消息到后端处理
+        setLoading(true); // 开始加载
         // 添加一个用户消息
         const newUserMessage: BpeCommon.recordItem = {
             content: inputValue,
             role: 'user',
         };
 
-
-        // 发送消息到后端处理
-        setLoading(true); // 开始加载
         const newGptMessage: BpeCommon.recordItem = {
             content: '',
             role: 'gpt',
@@ -51,7 +50,7 @@ export default function ChatView(props: ChatViewProps) {
             <Box className='chat-view-content'>
                 {messages.map((item, index) => (
                     <Box className="chat-item">
-                        {index == messages.length-1 && loading ?
+                        {index == messages.length - 1 && loading ?
                             <ChatItem content={item.content} role={item.role} loading={true} />
                             : <ChatItem content={item.content} role={item.role} />}
                     </Box>

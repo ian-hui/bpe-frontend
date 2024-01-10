@@ -1,23 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import {
   AppBar,
-  Toolbar,
   Container,
   Box,
   Drawer,
   Tab,
   Tabs,
-  Hidden,
 } from '@mui/material';
-import { createTheme, CSSObject, styled, Theme, ThemeProvider, useTheme } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import PdfUpload from './views/uploadPdF/uploadPDF';
 import './App.css';
 import './index.css';
 import Sidebar from './widget/sideBar/sideBar';
 import { BpeCommon } from './bpeTypes/common';
 import ChatView from './views/chatView/chatView';
-import CreateIcon from '@mui/icons-material/Create';
-import { Chat } from '@mui/icons-material';
+import { BpeServices } from './bpeService/bpeService';
 
 const theme = createTheme({
   palette: {
@@ -35,7 +32,7 @@ const theme = createTheme({
 
 const App: React.FC = () => {
 
-  const testItems:BpeCommon.navigationItemsList = {
+  const testItems: BpeCommon.navigationItemsList = {
     listType: 'Task',
     items: [
       {
@@ -52,136 +49,13 @@ const App: React.FC = () => {
       },
     ],
   }
-  const testRecords:BpeCommon.recordList = {
-    '1':[
+  const testRecords: BpeCommon.recordList = {
+    '1': [
       {
-        content: '- 公司1',
-        role: 'user',
-      },
-      {
-        content: '- 公司2',
+        content: '- 你好，我是你的助手，我可以帮你完成一些任务',
         role: 'gpt',
       },
-      {
-        content: '公司3',
-        role: 'user',
-      },
-      {
-        content: '公司4',
-        role: 'gpt',
-      },
-      {
-        content: '公司5',
-        role: 'user',
-      },
-      {
-        content: '公司6',
-        role: 'gpt',
-      },
-      {
-        content: '公司7',
-        role: 'user',
-      },
-      {
-        content: '公司8',
-        role: 'gpt',
-      },
-      {
-        content: '公司9',
-        role: 'user',
-      },
-      {
-        content: '公司10',
-        role: 'gpt',
-      },
-      {
-        content: '公司11',
-        role: 'user',
-      },
-      {
-        content: '公司12',
-        role: 'gpt',
-      },
-      {
-        content: '公司13',
-        role: 'user',
-      },
-      {
-        content: '公司14',
-        role: 'gpt',
-      },
-      {
-        content: '公司15',
-        role: 'user',
-      },
-      {
-        content: '公司16',
-        role: 'gpt',
-      },
-      {
-        content: '公司17',
-        role: 'user',
-      },
-      {
-        content: '公司18',
-        role: 'gpt',
-      },
-      {
-        content: '公司19',
-        role: 'user',
-      },
-      {
-        content: '公司20',
-        role: 'gpt',
-      },
-      {
-        content: '公司21',
-        role: 'user',
-      },
-      {
-        content: '公司22',
-        role: 'gpt',
-      },
-      {
-        content: '公司23',
-        role: 'user',
-      },
-      {
-        content: '公司24',
-        role: 'gpt',
-      },
-      {
-        content: '公司25',
-        role: 'user',
-      },
-      {
-        content: '公司26',
-        role: 'gpt',
-      },
-      {
-        content: '公司27',
-        role: 'user',
-      },
-      {
-        content: '公司28',
-        role: 'gpt',
-      },
-      {
-        content: '公司29',
-        role: 'user',
-      },
-      {
-        content: '公司30',
-        role: 'gpt',
-      },
-      {
-        content: '公司31',
-        role: 'user',
-      },
-      {
-        content: '公司32',
-        role: 'gpt',
-      },
+
 
     ],
   }
@@ -190,31 +64,61 @@ const App: React.FC = () => {
     setNavItems(testItems);
   }, []);
 
-    // 状态变量来追踪当前选中的导航项
-    const [navItems, setNavItems] = useState<BpeCommon.navigationItemsList>({listType:"task",items:[]}); // 用于追踪当前选中的导航项
-    const [selectedNav, setSelectedNav] = useState<BpeCommon.navigationItems>({chatid:"",name:"newTask"}); // 用于追踪当前选中的导航项
-    const handleItemSelected = (navitem:BpeCommon.navigationItems) => {
-      setSelectedNav(navitem);
-    };
-    const handleNewItem = (newItem: BpeCommon.navigationItems) => {
-      console.log(navItems)
-      setNavItems(prevNavItems => ({
-        ...prevNavItems, // 拷贝原有状态
-        items: [newItem, ...prevNavItems.items] // 只更新items数组
-      }));
-    };
+  // 状态变量来追踪当前选中的导航项
+  const [navItems, setNavItems] = useState<BpeCommon.navigationItemsList>({ listType: "task", items: [] }); //用于追踪会话列表
+  const [selectedNav, setSelectedNav] = useState<BpeCommon.navigationItems>({ chatid: "", name: "newTask" }); // 用于追踪当前选中的导航项
+  const [uploading, setUploading] = useState(false); // 用于追踪当前是否正在上传文件
+  const handleItemSelected = (navitem: BpeCommon.navigationItems) => {
+    setSelectedNav(navitem);
+  };
 
-    // 根据选中的导航项渲染不同的组件
-    const renderComponent = () => {
-      switch (selectedNav.name) {
-        case '新建立任务':
-          return <PdfUpload />; 
-        default:
-          return <ChatView records={testRecords['1']} />;
-      }
-    };
+  // 处理新建导航项
+  const handleNewItem = (newItem: BpeCommon.navigationItems) => {
+    setNavItems(prevNavItems => ({
+      ...prevNavItems, // 拷贝原有状态
+      items: [newItem, ...prevNavItems.items] // 只更新items数组
+    }));
+  };
 
-    // 状态变量来追踪当前选中的 Tab
+  // 处理上传文件
+  const handleUploadFile = async (file: File) => {
+    setUploading(true); // 开始上传
+    const id = selectedNav.chatid
+    const question = file.name
+    BpeServices.uploadDocument(file,id,question).then((response) => {
+      console.log(response);
+      // 假设后端处理完成后，设置 uploading 为 false
+      
+    //修改导航栏列表
+    setNavItems(prevNavItems => ({
+      ...prevNavItems, // 拷贝原有状态
+      items: prevNavItems.items.map(item => {
+        if (item.chatid === id) {
+          return { ...item, name: file.name };
+        }
+        return item;
+      })
+    }));
+    //修改选中的导航项
+    setSelectedNav(prevNavItems => ({
+      ...prevNavItems, // 拷贝原有状态
+      name: file.name
+    }));
+      setUploading(false);
+    });
+  }
+
+  // 根据选中的导航项渲染不同的组件
+  const renderComponent = () => {
+    switch (selectedNav.name) {
+      case '新建立任务':
+        return <PdfUpload onUpload={handleUploadFile} uploading={uploading} />
+      default:
+        return <ChatView records={testRecords['1']} />;
+    }
+  };
+
+  // 状态变量来追踪当前选中的 Tab
   const [value, setValue] = useState(0); // 用于追踪当前选中的 Tab，value 为选中的 Tab 的索引
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -253,7 +157,7 @@ const App: React.FC = () => {
         <Box className='page-wrapper'>
           {/* 顶部导航栏 */}
           <Box sx={{ display: 'flex' }} className='doc-header'>
-            <AppBar  sx={{ padding: '0 24px', height: '100%', position: 'relative', boxShadow: 'none', backgroundColor: 'black'}}>
+            <AppBar sx={{ padding: '0 24px', height: '100%', position: 'relative', boxShadow: 'none', backgroundColor: 'black' }}>
               <Tabs
                 value={value}
                 onChange={handleChange}
@@ -273,7 +177,7 @@ const App: React.FC = () => {
                 }}
               >
                 <Tab label="开始" />
-                <Tab label="使用文档📄" /> 
+                <Tab label="使用文档📄" />
               </Tabs>
             </AppBar>
           </Box>
@@ -281,11 +185,11 @@ const App: React.FC = () => {
           <Box sx={{ display: 'flex' }} className='page-body' overflow={'auto'}>
             {/* // 左侧导航栏 */}
             <Box className='docs-navi'>
-                <Sidebar listType={navItems.listType} items={navItems.items} selected={selectedNav.chatid} onItemSelected={handleItemSelected} onNewItem={handleNewItem} />
+              <Sidebar listType={navItems.listType} items={navItems.items} selected={selectedNav.chatid} onItemSelected={handleItemSelected} onNewItem={handleNewItem} />
             </Box>
-            <Container maxWidth="md" sx={{height:'100%',width:'100%', p:3,paddingBottom:'50px'}}>
-                {/* <PdfUpload /> */}
-                {renderComponent()}
+            <Container maxWidth="md" sx={{ height: '100%', width: '100%', p: 3, paddingBottom: '50px' }}>
+              {/* <PdfUpload /> */}
+              {renderComponent()}
             </Container>
           </Box>
         </Box>
