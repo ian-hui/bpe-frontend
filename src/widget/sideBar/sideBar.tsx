@@ -5,6 +5,9 @@ import './sideBar.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import { uuid } from '../../utils/uuid';
 import AddTaskIcon from '@mui/icons-material/AddTask';
+import '../../index.css';
+import { Height } from '@mui/icons-material';
+
 
 // 定义类型接口
 interface SidebarProps {
@@ -32,7 +35,8 @@ const Sidebar: React.FC<SidebarProps> = ({ listType, items, selected, onItemSele
                 width: '100%',
                 height: '100%',
                 // flexShrink: 0,
-                [`& .MuiDrawer-paper`]: { position: 'relative', height: '100%', border: 'none', bgcolor: 'black! important', color: 'var(--text-secondary)' },
+                [`& .MuiDrawer-paper`]: { position: 'relative', height: '100%',
+                border: 'none', bgcolor: 'var(--primary-300)! important', color: 'var(--text-100)' },
             }}
         >
             <List sx={{ position: 'relative' }}>
@@ -42,14 +46,16 @@ const Sidebar: React.FC<SidebarProps> = ({ listType, items, selected, onItemSele
                     flexDirection: 'row',
                     borderRadius: '8px',
                     '&:hover': {
-                      backgroundColor: 'var(--gray-900)', // 修改悬停时的背景色
-                      color: 'white',
+                      backgroundColor: 'var(--primary-200)', // 修改悬停时的背景色
+                      color: 'var(--bg-100)',
                     },
                   }} >
                     <ListItemText primary='新的任务' sx={{mr:1}} primaryTypographyProps={{fontWeight:'600'}}/>
                     <AddTaskIcon sx={{ml:'auto'}}/>
                 </ListItem>
-                <Divider sx={{ bgcolor: 'var(--text-primary)' }} /></>
+
+                {/* 分隔符 */}
+                <Divider sx={{ bgcolor: 'var(--text-200)' ,Height:'2px'}} /></>
 
                     : <div />}
             </List>
@@ -69,7 +75,12 @@ const Sidebar: React.FC<SidebarProps> = ({ listType, items, selected, onItemSele
                                 className='side-nav-item text-sm'
                                 sx={{
                                     '&:hover': {
-                                      backgroundColor: 'var(--gray-900)', // 修改悬停时的背景色
+                                        backgroundColor: 'var(--primary-200)', // 修改悬停时的背景色
+                                        color: 'var(--text-200)',
+                                    },
+                                    '&.Mui-selected': {
+                                        backgroundColor: 'var(--primary-200)', // 修改悬停时的背景色
+                                        color: 'var(--text-2    00)',
                                     },
                                   }} 
                             >

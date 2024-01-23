@@ -1,24 +1,15 @@
 .side-nav-item {
     border-radius: 8px!important;
     display: block!important;
-    font-size: 14px;
     line-height: 20px!important;
     padding: 6px 12px!important;
     text-decoration: none!important;
   }
-  
-  .side-nav-item:hover{
-    background-color: 'var(--gray-800)' !important;
-  }
-  
-  .side-nav-item.Mui-selected {
-    background-color: var(--gray-700)!important;
-    color: 'var(--text-secondary)',
-  }
+
   
   .side-nav-item-text .MuiTypography-root{
     font-weight: 600;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif!important;
-    font-size: .875rem;
+    font-family: "yuanti tc"!important;
+    font-size: 1rem;
     line-height: 1.25rem;
   }

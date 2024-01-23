@@ -1,5 +1,5 @@
 import { Container, Grid, List, ListItem, ListItemAvatar, Avatar, ListItemText, Input, Button, Box, Divider, TextField } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BpeCommon } from "../../bpeTypes/common";
 import "./chatView.css";
 import ChatItem from "./chatItem";
@@ -15,10 +15,15 @@ export default function ChatView(props: ChatViewProps) {
     const [messages, setMessages] = useState<Array<BpeCommon.recordItem>>([]);
     const [inputValue, setInputValue] = useState('');
     const [loading, setLoading] = useState(false);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
 
     // 切换任务时，更新消息列表
     useEffect(() => {
+        // 更新消息列表
         setMessages(props.records);
+        // 清空输入框
+        setInputValue('');
     }, [props.records]);
 
     // 处理输入框的变化
@@ -27,6 +32,9 @@ export default function ChatView(props: ChatViewProps) {
     };
 
     const handleSendMessage = () => {
+        if (inputValue === '') {
+            return;
+        }
         // 发送消息到后端处理
         setLoading(true); // 开始加载
         // 添加一个用户消息
@@ -45,6 +53,11 @@ export default function ChatView(props: ChatViewProps) {
         // 假设后端处理完成后，设置 loading 为 false
         // setLoading(false);
     };
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }, [messages]);
+
     return (
         <Box className="chat-view">
             <Box className='chat-view-content'>
@@ -53,6 +66,8 @@ export default function ChatView(props: ChatViewProps) {
                         {index == messages.length - 1 && loading ?
                             <ChatItem content={item.content} role={item.role} loading={true} />
                             : <ChatItem content={item.content} role={item.role} />}
+                        <div ref={messagesEndRef} />
+
                     </Box>
                 ))}
             </Box>
@@ -67,6 +82,14 @@ export default function ChatView(props: ChatViewProps) {
                     onChange={handleInputChange}
                     minRows={1}
                     maxRows={4} // 最多增长到4行高
+                    onKeyDown={(e)=>{
+                        if(e.key === 'Enter' && !e.shiftKey){
+                            e.preventDefault(); // 阻止默认的换行行为
+                            if(!loading){
+                                handleSendMessage();
+                            }
+                        }
+                    }}
                     // 可以添加 onChange 事件处理器来处理输入
                     sx={{
                         flexGrow: 1,
@@ -83,11 +106,15 @@ export default function ChatView(props: ChatViewProps) {
                     }}
                 />
                 <Button variant='contained'
-                    color='primary'
-                    sx={{ height: '24px', width: '24px', minWidth: '24px' }}
+                    sx={{ height: '24px', width: '24px', minWidth: '24px'
+                    ,backgroundColor:'inherit', boxShadow:'none',
+                    '&:hover':{
+                        backgroundColor:'inherit'
+                    }
+                    }}
                     onClick={handleSendMessage}
                     disabled={loading}
-                ><SendIcon />
+                ><SendIcon sx={{color: 'var(--text-100)'}}/>
                 </Button>
             </Box>
         </Box>

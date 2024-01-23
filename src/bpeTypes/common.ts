@@ -1,3 +1,4 @@
+import { type } from "os";
 
 export namespace BpeCommon {
     export type navigationItems ={
@@ -16,6 +17,12 @@ export namespace BpeCommon {
         [chatid: string]: recordItem[];
     }
     export type Role = "user" | "gpt";
+
+    export type SocketResponseType={
+        task_id: string;
+        type: string;
+        detail: string;
+    }
 }
 
 

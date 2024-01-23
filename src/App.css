@@ -4,16 +4,15 @@
 }
 
 .app-navigation {
-  border-right: 1px solid var(--gray-100);
+  border-right: 1px solid var(--bg-200);
   box-shadow: 0 0 0 transparent;
   display: flex;
   flex-direction: column;
   padding: 16px 12px;
   transition: width .15s cubic-bezier(0, .57, .21, .99), box-shadow .15s cubic-bezier(0, .57, .21, .99);
-  background-color: var(--bg-color);
+  background-color: var(--bg-100);
   z-index: 101;
   /* background-color: black ; */
-  color: white;
 }
 
 .app-navigation.fixed {
@@ -25,6 +24,7 @@
 }
 
 .app-wrapper {
+  background-color: var(--bg-100);
   display: flex;
   flex-direction: row;
   height: 100%;
@@ -45,8 +45,7 @@
 
 .page-wrapper {
   box-sizing: border-box;
-  color: #353740;
-  color: var(--gray-800);
+  color: var(--text-100);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -58,21 +57,29 @@
   display: flex;
   height: 100%;
   position: relative;
-
+  background-color: var(--primary-300);
 }
 
 .docs-navi {
-  border-right: 1px solid var(--gray-100);
+  /* border-right: 1px solid var(--bg-200); */
   flex: 0 0 auto;
   overflow: auto;
   padding: 20px 12px;
   width: 250px;
   box-sizing: border-box;
-  background-color: black;
-  color: var(--surface-primary);
+  background-color: var(--primary-300);
+  color: var(--text-100);
 }
 /* @media (min-width:600px){
   .css-4o2hxq-MuiToolbar-root{min-height:100%;}
 } */
 
 
+.docs-content{
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--primary-300);
+  /* border-left: 1px solid var(--primary-200); */
+  border-radius: 24px;
+  background-color: var(--bg-100);
+}
