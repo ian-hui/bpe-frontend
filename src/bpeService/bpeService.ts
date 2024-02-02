@@ -3,8 +3,8 @@ import { SocketService } from "./bpeWebsocket";
 import { BpeCommon } from "../bpeTypes/common";
 import { promises } from "dns";
 
-const backendUrl = "http://localhost:5000";
-const websocketUrl = "ws://localhost:5000";
+const backendUrl = "http://localhost:8080";
+const websocketUrl = "ws://localhost:8080";
 
 export namespace BpeServices {
 
@@ -47,21 +47,31 @@ export namespace BpeServices {
         });
     }
 
-    async function start_task(file: File, uuid: string, question: string, sid: string): Promise<string>{
+    async function start_task(file: File, uuid: string, question: string, sid: string): Promise<string> {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('uuid', uuid);
         formData.append('question', question);
-        formData.append('session_id', sid)
-        const response = await axios.post<BpeCommon.SocketResponseType>(backendUrl+"/start_task", formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        }).then((response) => {
+        formData.append('session_id', sid);
+    
+        try {
+            const response = await axios.post<BpeCommon.SocketResponseType>(backendUrl + "/start_task", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
             console.log(response);
             return response.data.task_id;
-        });
-        return response;
+        } catch (error) {
+            // 处理错误，您可以根据需要将错误信息格式化
+            if (axios.isAxiosError(error) && error.response) {
+                // 这里可以处理来自服务器的错误响应
+                throw new Error(error.response.data.message || "Unknown error occurred");
+            } else {
+                // 这里处理其他类型的错误（网络问题等）
+                throw new Error("Network or other error");
+            }
+        }
     }
 
     async function downloadFile(filepath:string): Promise<void>{

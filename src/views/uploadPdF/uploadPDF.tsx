@@ -87,8 +87,8 @@ export default function PdfUpload(props: PdfUploadProps) {
                 size="large"
                 sx={{ fontWeight: 'bold' }}
             >
-                请上传材料（现阶段只允许上传.docx文件，并以公司名字作为文件标题）
-                <VisuallyHiddenInput type='file' onChange={handleFileChange} accept='.docx' />
+                请上传材料（以公司名字作为文件标题）
+                <VisuallyHiddenInput type='file' onChange={handleFileChange} accept='.docx , .pdf, .txt' />
             </Button>
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}

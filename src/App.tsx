@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   AppBar,
   Container,
@@ -93,6 +93,8 @@ const App: React.FC = () => {
   const [navItems, setNavItems] = useState<BpeCommon.navigationItemsList>({ listType: "task", items: [] }); //用于追踪会话列表
   const [selectedNav, setSelectedNav] = useState<BpeCommon.navigationItems>({ chatid: "", name: "newTask" }); // 用于追踪当前选中的导航项
   const [uploading, setUploading] = useState(false); // 用于追踪当前是否正在上传文件
+  const [error, setError] = useState('');
+
   const handleItemSelected = (navitem: BpeCommon.navigationItems) => {
     setSelectedNav(navitem);
   };
@@ -128,47 +130,13 @@ const App: React.FC = () => {
     setUploading(true); // 开始上传
     const id = selectedNav.chatid
     const question = file.name
-    BpeServices.startUploadDoc(file, id, question, handleFinishUpload).catch((err) => {
-      console.log(err)
-    });
-    // if (uploading == false) {
-    //   setNavItems(prevNavItems => ({
-    //     ...prevNavItems, // 拷贝原有状态
-    //     items: prevNavItems.items.map(item => {
-    //       if (item.chatid === id) {
-    //         return { ...item, name: file.name };
-    //       }
-    //       return item;
-    //     })
-    //   }));
-    //   //修改选中的导航项
-    //   setSelectedNav(prevNavItems => ({
-    //     ...prevNavItems, // 拷贝原有状态
-    //     name: file.name
-    //   }));
-    // }
-
-    // BpeServices.uploadDocument(file,id,question).then((response) => {
-    //   console.log(response);
-    //   // 假设后端处理完成后，设置 uploading 为 false
-
-    // //修改导航栏列表
-    // setNavItems(prevNavItems => ({
-    //   ...prevNavItems, // 拷贝原有状态
-    //   items: prevNavItems.items.map(item => {
-    //     if (item.chatid === id) {
-    //       return { ...item, name: file.name };
-    //     }
-    //     return item;
-    //   })
-    // }));
-    // //修改选中的导航项
-    // setSelectedNav(prevNavItems => ({
-    //   ...prevNavItems, // 拷贝原有状态
-    //   name: file.name
-    // }));
-    //   setUploading(false);
-    // });
+    try{
+      await BpeServices.startUploadDoc(file, id, question, handleFinishUpload)
+    }catch (err:any) {
+      console.error(err);
+      setError(err.message);
+  }
+    
   }
 
   // 根据选中的导航项渲染不同的组件
@@ -186,6 +154,11 @@ const App: React.FC = () => {
   const handleTopBarChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  // 用于追踪当前选中的 Tab
+  useEffect(() => {
+
+  },[value])
 
 
   return (

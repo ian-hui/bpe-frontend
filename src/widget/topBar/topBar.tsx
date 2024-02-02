@@ -1,6 +1,7 @@
 import { AppBar, Tabs, Tab, Box } from "@mui/material";
 import "./topBar.css"
-
+import { useState } from "react";
+import KnowledgeUploader from "../knowledgeUploader/ knowledgeUploader";
 
 interface topBarProps {
     value: number;
@@ -8,12 +9,27 @@ interface topBarProps {
 }
 
 export default function TopBar(props: topBarProps){
+    const [kw_open, setKwOpen] = useState(false);
+    
+    const handleKwUpload = (event: React.SyntheticEvent, newValue: number) => {
+      if (newValue === 1) { // 假设索引2是“上传知识库文档”标签
+        setKwOpen(true);
+      } else {
+        props.handleChange(event, newValue);
+      }
+    }
+
     return (
         <Box sx={{ display: 'flex' }} className='doc-header'>
-            <AppBar sx={{ padding: '0 24px', height: '100%', position: 'relative', boxShadow: 'none', backgroundColor: 'var(--primary-300)' }}>
+            <AppBar sx={{ padding: '0 24px', 
+            height: '100%', 
+            position: 'relative', 
+            boxShadow: 'none', 
+            backgroundColor: 'var(--primary-300)' }}>
+              
               <Tabs
                 value={props.value}
-                onChange={props.handleChange}
+                onChange={handleKwUpload}
                 aria-label="navigation tabs"
                 sx={{
                   color: 'var(--text-100)',
@@ -30,8 +46,9 @@ export default function TopBar(props: topBarProps){
                 }}
               >
                 <Tab label="开始"/>
-                <Tab label="使用文档📄" />
+                <Tab label="上传知识库文档📄" />
               </Tabs>
+            <KnowledgeUploader ku_open={kw_open} setKuOpen={setKwOpen} />
             </AppBar>
           </Box>
     )
