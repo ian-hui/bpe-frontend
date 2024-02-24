@@ -4,33 +4,6 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
 
-// const theme = createTheme({
-//     palette: {
-//         primary: {
-//             main: grey[900],
-//         },
-//     },
-//     components: {
-//         // 调整按钮的样式
-//         MuiButton: {
-//             styleOverrides: {
-//                 root: {
-//                     fontSize: '1rem', // 增加字体大小
-//                     padding: '12px 24px', // 增加内边距
-//                 },
-//             },
-//         },
-//         // 调整Typography的样式
-//         MuiTypography: {
-//             styleOverrides: {
-//                 h5: {
-//                     fontSize: '2rem', // 标题字体大小
-//                 },
-//             },
-//         },
-//     },
-// });
-
 interface PdfUploadProps {
     onUpload: (file: File) => void;
     uploading: boolean;

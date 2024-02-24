@@ -145,4 +145,31 @@ export namespace BpeServices {
             throw error; // 抛出错误或者根据需要进行处理
         }
     }
+
+
+    export async function getCollectionList(){
+        try{
+            const response = await axios.get(backendUrl+"/get_knowledge_collection");
+            return response.data;
+        }catch(error){
+            console.error('获取列表时发生错误:', error);
+        }
+    }
+
+    export async function uploadKnowledge(file: File): Promise<string> {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await axios.post(backendUrl+"/knowledge", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error('上传文件时发生错误:', error);
+            throw error; // 抛出错误或者根据需要进行处理
+        }
+    }
 }
