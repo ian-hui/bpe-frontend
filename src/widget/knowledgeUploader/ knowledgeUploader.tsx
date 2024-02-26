@@ -48,7 +48,14 @@ export default function KnowledgeUploader(props: kuProps) {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      BpeServices.uploadKnowledge(file).then((data) => {
+      if (select_value == ""){
+        return (
+          <Alert severity="error">
+            请选择知识库
+          </Alert>
+          )
+      }
+      BpeServices.uploadKnowledge(file,select_value).then((data) => {
         (
           <Alert severity="success">
             成功：{data}
@@ -57,7 +64,7 @@ export default function KnowledgeUploader(props: kuProps) {
       }).catch((err) => {
         (
           <Alert severity="error">
-            失败：{ }
+            失败：{err.message}
           </Alert>
         )
       })
@@ -150,7 +157,7 @@ export default function KnowledgeUploader(props: kuProps) {
               }}
             >
               请上传材料
-              <VisuallyHiddenInput type='file' accept='.docx , .pdf, .txt' />
+              <VisuallyHiddenInput type='file' onChange={handleFileChange} accept='.docx , .pdf, .txt' />
             </Button>
           </DialogContentText>
         </DialogContent>

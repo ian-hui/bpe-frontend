@@ -156,10 +156,10 @@ export namespace BpeServices {
         }
     }
 
-    export async function uploadKnowledge(file: File): Promise<string> {
+    export async function uploadKnowledge(file: File, collection_name:string): Promise<string> {
         const formData = new FormData();
         formData.append('file', file);
-
+        formData.append('collection_name', collection_name);
         try {
             const response = await axios.post(backendUrl+"/knowledge", formData, {
                 headers: {
