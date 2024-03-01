@@ -32,7 +32,6 @@ const theme = createTheme({
 
 
 const App: React.FC = () => {
-
   const testItems: BpeCommon.navigationItemsList = {
     listType: 'Task',
     items: [
@@ -53,36 +52,9 @@ const App: React.FC = () => {
   const testRecords: BpeCommon.recordList = {
     '1': [
       {
-        content: '- 你好，我是你的助手，我可以帮你完成一些任务',
+        content: '- 功能仍在开发中，敬请期待',
         role: 'gpt',
       },],
-    '2': [
-      {
-        content: '- 你好，我是你的助手，我可以帮你完成一些任务',
-        role: 'gpt',
-      },
-      {
-        content: '- 你好',
-        role: 'user',
-      },
-      {
-        content: '- 你好，我是你的助手，我可以帮你完成一些任务',
-        role: 'gpt',
-      },
-      {
-        content: '- 你好',
-        role: 'user',
-      },
-      {
-        content: '- 你好，我是你的助手，我可以帮你完成一些任务',
-        role: 'gpt',
-      },
-      {
-        content: '- 你好',
-        role: 'user',
-      },
-
-    ],
   }
 
   useEffect(() => {
@@ -93,7 +65,6 @@ const App: React.FC = () => {
   const [navItems, setNavItems] = useState<BpeCommon.navigationItemsList>({ listType: "task", items: [] }); //用于追踪会话列表
   const [selectedNav, setSelectedNav] = useState<BpeCommon.navigationItems>({ chatid: "", name: "newTask" }); // 用于追踪当前选中的导航项
   const [uploading, setUploading] = useState(false); // 用于追踪当前是否正在上传文件
-  const [error, setError] = useState('');
 
   const handleItemSelected = (navitem: BpeCommon.navigationItems) => {
     setSelectedNav(navitem);
@@ -134,7 +105,7 @@ const App: React.FC = () => {
       await BpeServices.startUploadDoc(file, id, question, handleFinishUpload)
     }catch (err:any) {
       console.error(err);
-      setError(err.message);
+
   }
     
   }

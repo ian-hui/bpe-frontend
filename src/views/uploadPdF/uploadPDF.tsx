@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
-import { Button, Typography, Container, Box, Backdrop, CircularProgress } from '@mui/material';
+import { Button, Typography, Container, Box } from '@mui/material';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
-import { grey } from '@mui/material/colors';
+import { styled } from '@mui/material/styles';
+import Progress from '../../widget/progress/progress';
 
 interface PdfUploadProps {
     onUpload: (file: File) => void;
@@ -63,12 +63,7 @@ export default function PdfUpload(props: PdfUploadProps) {
                 请上传材料（以公司名字作为文件标题）
                 <VisuallyHiddenInput type='file' onChange={handleFileChange} accept='.docx , .pdf, .txt' />
             </Button>
-            <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={props.uploading}
-            >
-                <CircularProgress color="inherit" />
-            </Backdrop>
+            <Progress progress_open={props.uploading} setProgress_open={(open: boolean) => { }} />
         </Container>
         // </ThemeProvider>
     );

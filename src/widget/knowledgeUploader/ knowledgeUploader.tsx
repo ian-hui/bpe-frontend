@@ -5,6 +5,7 @@ import { useState, useRef } from "react";
 import { TransitionProps } from '@mui/material/transitions';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { BpeServices } from "../../bpeService/bpeService";
+import { SettingsPowerOutlined } from "@mui/icons-material";
 
 
 
@@ -25,7 +26,15 @@ const t = React.forwardRef(function Transition(
 export default function KnowledgeUploader(props: kuProps) {
   useEffect(() => {
     BpeServices.getCollectionList().then((data) => {
-      setOptions([...options, ...data])
+      //判断data类型
+      if (typeof data === "string"){
+        setOptions([...options, data])
+      }else if (Array.isArray(data)){
+        setOptions([...options, ...data])
+      }else{
+        return
+      }
+      
     })
   }, [])
 
@@ -46,7 +55,7 @@ export default function KnowledgeUploader(props: kuProps) {
   };
   const [options, setOptions] = useState<string[]>(['新增自定义']);
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+    const file = event.target.files?.[0]; 
     if (file) {
       if (select_value == ""){
         return (

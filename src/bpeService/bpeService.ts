@@ -2,12 +2,20 @@ import axios from "axios";
 import { SocketService } from "./bpeWebsocket";
 import { BpeCommon } from "../bpeTypes/common";
 import { promises } from "dns";
+import Progress from "../widget/progress/progress";
+import { useState } from "react";
 
 const backendUrl = "http://localhost:8080";
 const websocketUrl = "ws://localhost:8080";
 
-export namespace BpeServices {
+declare global {
+    var progress_global: any
+}
+global.progress_global = 0;
 
+
+export namespace BpeServices {
+    
     export async function startUploadDoc(file: File, uuid: string, question: string, finishUpload: (file:File,id:string) => void): Promise<void> {
         // 使用WebSocket服务
         const webSocketService = new SocketService(websocketUrl);
@@ -42,12 +50,13 @@ export namespace BpeServices {
         // 增加一个事件监听器（update）
         webSocketService.getSocket().on("progress_update", (data:BpeCommon.SocketResponseType) => {
             console.log("update");
-            // 处理收到的消息
-            console.log(data);
+            // 更新进度
+            progress_global += Number(data.detail);
         });
     }
 
     async function start_task(file: File, uuid: string, question: string, sid: string): Promise<string> {
+        global.progress_global = 1;
         const formData = new FormData();
         formData.append('file', file);
         formData.append('uuid', uuid);
@@ -75,6 +84,7 @@ export namespace BpeServices {
     }
 
     async function downloadFile(filepath:string): Promise<void>{
+        try{
             const response = await axios.get(backendUrl+"/download/"+filepath, {
                 responseType: 'blob',  // 重要：期望响应是一个Blob
             });
@@ -100,6 +110,10 @@ export namespace BpeServices {
             // 清理：移除元素，释放 Blob URL
             document.body.removeChild(link);
             window.URL.revokeObjectURL(fileUrl);
+        }catch(error){
+            console.error('下载文件时发生错误:', error);
+        }
+            
     }
 
     export async function uploadDocument(file: File, uuid: string, question: string): Promise<any> {
