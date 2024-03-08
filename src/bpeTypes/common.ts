@@ -1,6 +1,10 @@
 import { type } from "os";
 
 export namespace BpeCommon {
+    export interface WithErrorHandlingProps {
+        handleError: (error_msg: string) => void;
+    }
+    
     export type navigationItems ={
         chatid : string,
         name : string,

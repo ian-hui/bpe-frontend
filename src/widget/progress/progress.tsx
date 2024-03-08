@@ -1,16 +1,15 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, LinearProgressProps, Box, LinearProgress, Typography, CircularProgress } from "@mui/material";
 import React, { useEffect } from "react";
-import { BpeServices } from "../../bpeService/bpeService";
 
 
 interface progressProps {
     progress_open: boolean;
-    setProgress_open: (open: boolean) => void;
+    setProgressOpen: (open: boolean) => void;
 }
 
 export default function Progress(props: progressProps) {
     const handleClose = () => {
-        props.setProgress_open(false);
+        props.setProgressOpen(false);
     };
     const [progress, setProgress] = React.useState(0);
 

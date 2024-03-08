@@ -16,9 +16,9 @@ global.progress_global = 0;
 
 export namespace BpeServices {
     
-    export async function startUploadDoc(file: File, uuid: string, question: string, finishUpload: (file:File,id:string) => void): Promise<void> {
+    export async function startUploadDoc(file: File, uuid: string, question: string, finishUpload: (file:File,id:string) => void, onError: (error_msg:string) => void): Promise<void> {
         // 使用WebSocket服务
-        const webSocketService = new SocketService(websocketUrl);
+        const webSocketService = new SocketService(websocketUrl,onError);
         // 增加一个事件监听器（start）
         webSocketService.getSocket().on("start", async (data:any) => {
             console.log("start");
@@ -39,11 +39,11 @@ export namespace BpeServices {
             console.log("finish");
             try{
                 downloadFile(data.detail);
-                webSocketService.disconnect();
                 finishUpload(file, uuid);
             }catch(error){
+                onError("下载文件失败，失败原因："+error);
+            }finally{
                 webSocketService.disconnect();
-                throw error;
             }
         });
 
@@ -167,6 +167,7 @@ export namespace BpeServices {
             return response.data;
         }catch(error){
             console.error('获取列表时发生错误:', error);
+            throw error; // 抛出错误或者根据需要进行处理
         }
     }
 

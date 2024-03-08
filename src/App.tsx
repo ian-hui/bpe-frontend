@@ -1,11 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  AppBar,
   Container,
   Box,
   Drawer,
-  Tab,
-  Tabs,
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import PdfUpload from './views/uploadPdF/uploadPDF';
@@ -16,6 +13,7 @@ import { BpeCommon } from './bpeTypes/common';
 import ChatView from './views/chatView/chatView';
 import { BpeServices } from './bpeService/bpeService';
 import TopBar from './widget/topBar/topBar';
+import ErrorMsg from './utils/message';
 
 const theme = createTheme({
   palette: {
@@ -35,18 +33,7 @@ const App: React.FC = () => {
   const testItems: BpeCommon.navigationItemsList = {
     listType: 'Task',
     items: [
-      {
-        chatid: '1',
-        name: '公司1',
-      },
-      {
-        chatid: '2',
-        name: '公司2',
-      },
-      {
-        chatid: '3',
-        name: '公司3',
-      },
+      
     ],
   }
   const testRecords: BpeCommon.recordList = {
@@ -78,6 +65,7 @@ const App: React.FC = () => {
     }));
   };
 
+
   const handleFinishUpload = (file:File,id:string) => {
       setNavItems(prevNavItems => ({
         ...prevNavItems, // 拷贝原有状态
@@ -102,10 +90,11 @@ const App: React.FC = () => {
     const id = selectedNav.chatid
     const question = file.name
     try{
-      await BpeServices.startUploadDoc(file, id, question, handleFinishUpload)
-    }catch (err:any) {
-      console.error(err);
-
+      await BpeServices.startUploadDoc(file, id, question, handleFinishUpload, handleErrorMessage)
+    }catch (err) {
+      setUploading(false)
+      setShowError(true);
+      setErrorMessage("任务失败，失败原因："+ String(err));
   }
     
   }
@@ -131,10 +120,19 @@ const App: React.FC = () => {
 
   },[value])
 
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const handleErrorMessage = (message: string) => {
+    setErrorMessage(message);
+    setShowError(true);
+    console.log(showError)
+    setTimeout(() => setShowError(false), 3000); // 3秒后自动隐藏错误消息
+  };
 
   return (
     <ThemeProvider theme={theme}>
-      <Box className='app-wrapper'>
+      <Box  className='app-wrapper'>
+      {showError && <ErrorMsg content={errorMessage} duration={3000} />}
         <Box className='app-navigation'>
           <Drawer
             variant="permanent"
@@ -163,7 +161,7 @@ const App: React.FC = () => {
         </Box>
         <Box className='page-wrapper'>
           {/* 顶部导航栏 */}
-          <TopBar value={value} handleChange={handleTopBarChange} />
+          <TopBar value={value} handleChange={handleTopBarChange} handleError={handleErrorMessage}/>
           {/* // 页面主体 */}
           <Box sx={{ display: 'flex' }} className='page-body' overflow={'auto'}>
             {/* // 左侧导航栏 */}

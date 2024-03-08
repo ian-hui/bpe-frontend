@@ -2,8 +2,9 @@ import { AppBar, Tabs, Tab, Box } from "@mui/material";
 import "./topBar.css"
 import { useState } from "react";
 import KnowledgeUploader from "../knowledgeUploader/ knowledgeUploader";
+import { BpeCommon } from "../../bpeTypes/common";
 
-interface topBarProps {
+interface topBarProps extends BpeCommon.WithErrorHandlingProps{
     value: number;
     handleChange: (event: React.SyntheticEvent, newValue: number) => void;
 }
@@ -48,7 +49,7 @@ export default function TopBar(props: topBarProps){
                 <Tab label="开始"/>
                 <Tab label="上传知识库文档📄" />
               </Tabs>
-            <KnowledgeUploader ku_open={kw_open} setKuOpen={setKwOpen} />
+            <KnowledgeUploader ku_open={kw_open} setKuOpen={setKwOpen} handleError={props.handleError}/>
             </AppBar>
           </Box>
     )

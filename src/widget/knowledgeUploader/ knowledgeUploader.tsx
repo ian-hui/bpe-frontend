@@ -5,11 +5,14 @@ import { useState, useRef } from "react";
 import { TransitionProps } from '@mui/material/transitions';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { BpeServices } from "../../bpeService/bpeService";
-import { SettingsPowerOutlined } from "@mui/icons-material";
+import { ReplayCircleFilledTwoTone, SettingsPowerOutlined } from "@mui/icons-material";
+import ReactDOM from "react-dom";
+import ErrorMsg from "../../utils/message";
+import { BpeCommon } from "../../bpeTypes/common";
 
 
 
-interface kuProps {
+interface kuProps extends BpeCommon.WithErrorHandlingProps{
   ku_open: boolean;
   setKuOpen: (open: boolean) => void;
 }
@@ -27,13 +30,16 @@ export default function KnowledgeUploader(props: kuProps) {
   useEffect(() => {
     BpeServices.getCollectionList().then((data) => {
       //判断data类型
-      if (typeof data === "string"){
+      if (typeof data === "string") {
         setOptions([...options, data])
-      }else if (Array.isArray(data)){
+      } else if (Array.isArray(data)) {
         setOptions([...options, ...data])
-      }else{
+      } else {
         return
       }
+    }).catch((err) => {
+      
+       props.handleError("上传知识库组件连接服务器失败，失败原因:"+err.message);
       
     })
   }, [])
@@ -55,16 +61,16 @@ export default function KnowledgeUploader(props: kuProps) {
   };
   const [options, setOptions] = useState<string[]>(['新增自定义']);
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]; 
+    const file = event.target.files?.[0];
     if (file) {
-      if (select_value == ""){
+      if (select_value == "") {
         return (
           <Alert severity="error">
             请选择知识库
           </Alert>
-          )
+        )
       }
-      BpeServices.uploadKnowledge(file,select_value).then((data) => {
+      BpeServices.uploadKnowledge(file, select_value).then((data) => {
         (
           <Alert severity="success">
             成功：{data}

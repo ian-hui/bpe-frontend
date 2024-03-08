@@ -4,7 +4,7 @@ export class SocketService {
     private socket: Socket
     private task_id: string
 
-    constructor(url: string) {
+    constructor(url: string, onError: (error_msg:string) => void) {
         this.socket = io(url);
         this.task_id = "";
 
@@ -21,11 +21,16 @@ export class SocketService {
             // 处理收到的消息
         });
 
+        this.socket.on("connect_error", (error: any) => {
+            console.log("Connection error:", error);
+            onError(error.message);
+            this.socket.disconnect();
+        });
 
         this.socket.on("test", (data: any) => {
             console.log("Test received haha:", data);
             // 处理收到的消息
-        });
+        })
     }
 
     public sendMessage(message: string): void {

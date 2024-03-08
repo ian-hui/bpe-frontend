@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Typography, Container, Box } from '@mui/material';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { styled } from '@mui/material/styles';
@@ -10,6 +10,14 @@ interface PdfUploadProps {
 }
 
 export default function PdfUpload(props: PdfUploadProps) {
+    useEffect(() => {
+        if(props.uploading){
+            setProgressOpen(true);
+        }else{
+            setProgressOpen(false);
+        }
+    }, [props.uploading])
+    const [progress_open, setProgressOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
     const inputRef = useRef(null);
     //定义一个组件，用于隐藏input，这个input是用来上传文件的
@@ -63,7 +71,7 @@ export default function PdfUpload(props: PdfUploadProps) {
                 请上传材料（以公司名字作为文件标题）
                 <VisuallyHiddenInput type='file' onChange={handleFileChange} accept='.docx , .pdf, .txt' />
             </Button>
-            <Progress progress_open={props.uploading} setProgress_open={(open: boolean) => { }} />
+            <Progress progress_open={props.uploading&&progress_open} setProgressOpen={setProgressOpen}/>
         </Container>
         // </ThemeProvider>
     );
